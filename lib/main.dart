@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark().copyWith(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       home: StoryboardInApp(),
     );
   }
@@ -48,19 +48,32 @@ class StoryboardInApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Example'),
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 4.0,
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {},
+            ),
+          ],
+        ),
       ),
       body: Container(
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                color: Colors.white,
-              ),
-            ),
-            Expanded(
+              flex: 2,
               child: StoryBoard(
+                initialScale: 0.6,
+                title: 'Screens',
                 usePreferences: true,
                 crossAxisCount: 7,
                 showAppBar: true,
@@ -74,6 +87,16 @@ class StoryboardInApp extends StatelessWidget {
                       ),
                     ),
                 ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Scaffold(
+                backgroundColor: Colors.grey[800],
+                appBar: AppBar(
+                  backgroundColor: Colors.blue,
+                  title: Text('Components'),
+                ),
               ),
             ),
           ],
