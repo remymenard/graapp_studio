@@ -25,26 +25,66 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Widget _generateScreen({
-  Text title,
-  FloatingActionButton fab,
-  Color color,
-}) {
-  return Builder(
-    builder: (context) {
-      final Map<String, dynamic> args =
-          ModalRoute.of(context).settings.arguments;
-      return Scaffold(
-        appBar: AppBar(title: title),
-        backgroundColor: color,
-        body: args == null ? null : Center(child: Text(args.toString())),
-        floatingActionButton: fab,
-      );
-    },
-  );
+int selectedScreen;
+
+class Screen extends StatefulWidget {
+  final Text title;
+  final FloatingActionButton fab;
+  final Color color;
+  final int index;
+  final Function notifyParent;
+
+  Screen(
+      {this.title,
+      this.fab,
+      this.color,
+      this.index,
+      @required this.notifyParent});
+
+  @override
+  _ScreenState createState() => _ScreenState();
 }
 
-class StoryboardInApp extends StatelessWidget {
+class _ScreenState extends State<Screen> {
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        final Map<String, dynamic> args =
+            ModalRoute.of(context).settings.arguments;
+        return GestureDetector(
+          onTap: () {
+            selectedScreen = widget.index;
+            widget.notifyParent();
+          },
+          child: Container(
+            decoration: selectedScreen == widget.index
+                ? BoxDecoration(
+                    border: Border.all(width: 6, color: Colors.yellow))
+                : null,
+            child: Scaffold(
+              appBar: AppBar(title: widget.title),
+              backgroundColor: widget.color,
+              body: args == null ? null : Center(child: Text(args.toString())),
+              floatingActionButton: widget.fab,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class StoryboardInApp extends StatefulWidget {
+  @override
+  _StoryboardInAppState createState() => _StoryboardInAppState();
+}
+
+class _StoryboardInAppState extends State<StoryboardInApp> {
+  refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +121,9 @@ class StoryboardInApp extends StatelessWidget {
                   for (var i = 0; i < 25; i++)
                     SizedBox.fromSize(
                       size: Size(400, 700),
-                      child: _generateScreen(
+                      child: Screen(
+                        notifyParent: refresh,
+                        index: i,
                         title: Text('Screen$i'),
                         color: RandomColor(i).randomColor(),
                       ),
